@@ -104,6 +104,8 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.slime, this.ground);
 
         this.physics.world.wrap(this.player, 0);
+
+        this.physics.add.overlap(this.swordHitbox, this.slime, this.handleSlime, undefined, this);
     }
 
     update() {
@@ -139,5 +141,9 @@ class Play extends Phaser.Scene {
             this.swordHitbox.body.enable = false;
             this.physics.world.remove(this.swordHitbox.body);
         }
+    }
+
+    handleSlime(slime) {
+        this.slime.destroy();
     }
 }
