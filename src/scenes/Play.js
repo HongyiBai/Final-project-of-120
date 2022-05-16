@@ -113,6 +113,8 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.slime,this.layer);
 
         this.physics.world.wrap(this.player, 0);
+
+        this.physics.add.overlap(this.swordHitbox, this.slime, this.handleSlime, undefined, this);
     }
 
     update() {
@@ -128,12 +130,14 @@ class Play extends Phaser.Scene {
             this.player.anims.play('run_right', true);
         } else if (cursors.down.isDown) {
             if (this.direction == 0) {
+                //this.sound.play('atk_sfx');
                 this.player.anims.play('atk_left', true);
                 this.swordHitbox.body.enable = true;
                 this.physics.world.add(this.swordHitbox.body);
                 this.swordHitbox.x = this.player.x - this.player.width/2.5;
                 this.swordHitbox.y = this.player.y;
             } else if (this.direction == 1) {
+                //this.sound.play('atk_sfx');
                 this.swordHitbox.body.enable = true;
                 this.physics.world.add(this.swordHitbox.body);
                 this.player.anims.play('atk_right', true);
@@ -146,5 +150,9 @@ class Play extends Phaser.Scene {
             this.swordHitbox.body.enable = false;
             this.physics.world.remove(this.swordHitbox.body);
         }
+    }
+
+    handleSlime(slime) {
+        this.slime.destroy();
     }
 }
