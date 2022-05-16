@@ -92,10 +92,11 @@ class Play extends Phaser.Scene {
         this.player = this.physics.add.sprite(game.config.width/2, game.config.height - 59, 'character', 'idle_stand_0001').setScale(1.5);
         this.player.setCollideWorldBounds(true);
 
-        this.swordHitbox = this.add.rectangle(0, 0, this.player.width * 3, this.player.height * 1.5, 0, 0xfffffff, 0.5);
+        this.swordHitbox = this.add.rectangle(0, 0, this.player.width * 3, this.player.height * 1.5, 0, 0x000000, 0);
         this.physics.add.existing(this.swordHitbox);
 
-        this.slime = this.physics.add.sprite(game.config.width - 50, game.config.height - 51, 'slime',);
+        //this.slime = this.physics.add.sprite(game.config.width - 50, game.config.height - 51, 'slime');
+        this.slime = new Slime(this, game.config.width - 50, game.config.height - 51, 'slime', 0);
         cursors = this.input.keyboard.createCursorKeys();
 
         this.physics.add.collider(this.player, this.ground);
@@ -105,6 +106,8 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+        this.slime.update();
+        
         if (cursors.left.isDown) {
             this.direction = 0;
             this.player.body.setVelocityX(-this.VELOCITY);
@@ -116,9 +119,13 @@ class Play extends Phaser.Scene {
         } else if (cursors.down.isDown) {
             if (this.direction == 0) {
                 this.player.anims.play('atk_left', true);
+                this.swordHitbox.body.enable = true;
+                this.physics.world.add(this.swordHitbox.body);
                 this.swordHitbox.x = this.player.x - this.player.width/2.5;
                 this.swordHitbox.y = this.player.y;
             } else if (this.direction == 1) {
+                this.swordHitbox.body.enable = true;
+                this.physics.world.add(this.swordHitbox.body);
                 this.player.anims.play('atk_right', true);
                 this.swordHitbox.x = this.player.x + this.player.width/2;
                 this.swordHitbox.y = this.player.y;
@@ -126,8 +133,8 @@ class Play extends Phaser.Scene {
         } else if (!cursors.right.isDown && !cursors.left.isDown && !cursors.down.isDown) {
             this.player.anims.play('idle', true);
             this.player.body.setVelocityX(0);    
-            this.swordHitbox.x = 0;
-            this.swordHitbox.y = 0;
+            this.swordHitbox.body.enable = false;
+            this.physics.world.remove(this.swordHitbox.body);
         }
     }
 }
