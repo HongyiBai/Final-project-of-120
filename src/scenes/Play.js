@@ -7,7 +7,8 @@ class Play extends Phaser.Scene {
         this.load.path = 'assets/';
         this.load.atlas("character",'player.png','player.json');
         this.load.image('slime', 'slime.png');
-        this.load.image('bk', 'background for final project(test).png');         
+        this.load.image('bk', 'background for final project(test).png');      
+        this.load.image('layer', 'layer.png');
     }
 
     create() {
@@ -89,6 +90,12 @@ class Play extends Phaser.Scene {
         this.groundSprite.body.allowGravity = false;
         this.ground.add(this.groundSprite);
 
+        this.layer = this.add.group();
+        this.layerSprite = this.physics.add.sprite(game.config.width, game.config.height, 'layer').setScale(2);
+        this.layerSprite.body.immovable = true;
+        this.layerSprite.body.allowGravity = false;
+        this.layer.add(this.layerSprite);
+
         this.player = this.physics.add.sprite(game.config.width/2, game.config.height - 59, 'character', 'idle_stand_0001').setScale(1.5);
         this.player.setCollideWorldBounds(true);
 
@@ -102,6 +109,8 @@ class Play extends Phaser.Scene {
 
         this.physics.add.collider(this.player, this.ground);
         this.physics.add.collider(this.slime, this.ground);
+        this.physics.add.collider(this.player,this.layer);
+        this.physics.add.collider(this.slime,this.layer);
 
         this.physics.world.wrap(this.player, 0);
     }
