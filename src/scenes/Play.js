@@ -11,7 +11,7 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-        //this.background = this.add.tileSprite(0, 0, 680, 480, 'bk').setOrigin(0, 0);
+        this.background = this.add.tileSprite(0, 0, 680, 480, 'bk').setOrigin(0, 0);
         this.VELOCITY = 500;
         this.direction = 0;     //left = 0 and right = 1
         this.cameras.main.setBackgroundColor('#666');
