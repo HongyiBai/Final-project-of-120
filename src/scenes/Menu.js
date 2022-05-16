@@ -66,9 +66,9 @@ class MainMenu extends Phaser.Scene {
         this.add.text(game.config.width/2, game.config.height/2 + 215, 'D to attack right', menuConfig).setOrigin(0.5);
 
         //loop background music
-        // var music = this.sound.add('bgm');
-        // music.setLoop(true);
-        // music.play();
+        var music = this.sound.add('arena_1');
+        music.setLoop(true);
+        music.play();
     }
 }
 
