@@ -15,6 +15,7 @@ class Play extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#666');
         //animations
         //idle
+        //hi
         this.anims.create({
             key: 'idle',
             frames: this.anims.generateFrameNames('character', {
