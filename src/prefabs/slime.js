@@ -3,7 +3,7 @@ class Slime extends Phaser.GameObjects.Sprite {
         super(scene, x, y, texture, frame);
         scene.add.existing(this);   // add to existing scene
         this.hp = 20;   // store pointValue
-        this.moveSpeed = 3;        // pixels per frame
+        this.moveSpeed = 1.5;        // pixels per frame
     }
 
     update() {
@@ -11,9 +11,9 @@ class Slime extends Phaser.GameObjects.Sprite {
         this.x += this.moveSpeed;
         // wrap around from left edge to right edge
         if(this.x >= 640) {
-            this.moveSpeed = -3;
+            this.moveSpeed = -1.5;
         } else if (this.x <= 0){
-            this.moveSpeed = 3;
+            this.moveSpeed = 1.5;
         }
     }
 }
