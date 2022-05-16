@@ -97,6 +97,7 @@ class Play extends Phaser.Scene {
 
         //this.slime = this.physics.add.sprite(game.config.width - 50, game.config.height - 51, 'slime');
         this.slime = new Slime(this, game.config.width - 50, game.config.height - 51, 'slime', 0);
+        this.physics.add.existing(this.slime);
         cursors = this.input.keyboard.createCursorKeys();
 
         this.physics.add.collider(this.player, this.ground);
@@ -107,7 +108,7 @@ class Play extends Phaser.Scene {
 
     update() {
         this.slime.update();
-        
+
         if (cursors.left.isDown) {
             this.direction = 0;
             this.player.body.setVelocityX(-this.VELOCITY);
