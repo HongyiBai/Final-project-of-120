@@ -8,7 +8,6 @@ class MainMenu extends Phaser.Scene {
         //this.load.audio('bgm', './assets/endless_runner.mp3');
         this.load.audio('arena_1', 'Arena_1.mp3');
         this.load.audio('atk_sfx', 'attackSFX.wav');
-        this.load.audio('jump', './assets/Jump.wav');
         //this.load.image('menubackground', './assets/menubg.png');
     }
     
