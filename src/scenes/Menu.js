@@ -6,6 +6,7 @@ class MainMenu extends Phaser.Scene {
     preload() {
         this.load.path = 'assets/';
         //this.load.audio('bgm', './assets/endless_runner.mp3');
+        this.load.image('ground', 'ground.png');
         this.load.audio('arena_1', 'Arena_1.mp3');
         this.load.audio('atk_sfx', 'attackSFX.wav');
         //this.load.image('menubackground', './assets/menubg.png');

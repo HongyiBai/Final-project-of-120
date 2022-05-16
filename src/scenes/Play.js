@@ -11,6 +11,7 @@ class Play extends Phaser.Scene {
 
     create() {
         this.VELOCITY = 500;
+        this.DRAG = 800;
         this.cameras.main.setBackgroundColor('#666');
         //animations
         //idle
@@ -79,11 +80,19 @@ class Play extends Phaser.Scene {
             repeat: -1,
         });
 
+        this.ground = this.add.group();
+        this.groundSprite = this.physics.add.sprite(0, game.config.height, 'ground').setScale(2);
+        this.groundSprite.body.immovable = true;
+        this.groundSprite.body.allowGravity = false;
+        this.ground.add(this.groundSprite);
+
         this.player = this.physics.add.sprite(game.config.width/2, game.config.height/2, 'character', 'idle_stand_0001').setScale(1.5);
 
         cursors = this.input.keyboard.createCursorKeys();
 
         this.physics.add.collider(this.player, this.ground);
+
+        this.physics.world.wrap(this.player, 0);
     }
 
     update() {
