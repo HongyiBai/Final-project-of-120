@@ -6,10 +6,12 @@ class Play extends Phaser.Scene {
     preload() {
         this.load.path = 'assets/';
         this.load.atlas("character",'player.png','player.json');
-        this.load.image('slime', 'slime.png');        
+        this.load.image('slime', 'slime.png');
+        this.load.image('bk', 'background for final project(test).png');         
     }
 
     create() {
+        this.background = this.add.tileSprite(0, 0, 640, 480, 'bk').setOrigin(0, 0);
         this.VELOCITY = 500;
         this.DRAG = 800;
         this.cameras.main.setBackgroundColor('#666');
