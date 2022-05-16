@@ -27,9 +27,9 @@ window.onload = function() {
             default: "arcade",
             arcade: {
                 debug: true,
-                gravity: {
-                    y: 500
-                }
+                // gravity: {
+                //     y: 500
+                // }
             }
         }
     }

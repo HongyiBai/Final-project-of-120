@@ -11,9 +11,9 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-        this.background = this.add.tileSprite(0, 0, 680, 480, 'bk').setOrigin(0, 0);
+        //this.background = this.add.tileSprite(0, 0, 680, 480, 'bk').setOrigin(0, 0);
         this.VELOCITY = 500;
-        this.DRAG = 800;
+        this.direction = 0;     //left = 0 and right = 1
         this.cameras.main.setBackgroundColor('#666');
         //animations
         //idle
@@ -67,7 +67,7 @@ class Play extends Phaser.Scene {
                 zeroPad: 4
             }),
             frameRate: 15,
-            repeat: -1,
+            //repeatDelay: 2000
         });
 
         this.anims.create({
@@ -80,7 +80,7 @@ class Play extends Phaser.Scene {
                 zeroPad: 4
             }),
             frameRate: 15,
-            repeat: -1,
+            //repeatDelay: 2000
         });
 
         this.ground = this.add.group();
@@ -89,25 +89,45 @@ class Play extends Phaser.Scene {
         this.groundSprite.body.allowGravity = false;
         this.ground.add(this.groundSprite);
 
-        this.player = this.physics.add.sprite(game.config.width/2, game.config.height/2, 'character', 'idle_stand_0001').setScale(1.5);
+        this.player = this.physics.add.sprite(game.config.width/2, game.config.height - 59, 'character', 'idle_stand_0001').setScale(1.5);
+        this.player.setCollideWorldBounds(true);
 
+        this.swordHitbox = this.add.rectangle(0, 0, this.player.width * 3, this.player.height * 1.5, 0, 0xfffffff, 0.5);
+        this.physics.add.existing(this.swordHitbox);
+
+        this.slime = this.physics.add.sprite(game.config.width - 50, game.config.height - 51, 'slime',);
         cursors = this.input.keyboard.createCursorKeys();
 
         this.physics.add.collider(this.player, this.ground);
+        this.physics.add.collider(this.slime, this.ground);
 
         this.physics.world.wrap(this.player, 0);
     }
 
     update() {
         if (cursors.left.isDown) {
+            this.direction = 0;
             this.player.body.setVelocityX(-this.VELOCITY);
             this.player.anims.play('run_left', true);
         } else if (cursors.right.isDown) {
+            this.direction = 1;
             this.player.body.setVelocityX(this.VELOCITY);
             this.player.anims.play('run_right', true);
-        } else if (!cursors.right.isDown && !cursors.left.isDown) {
+        } else if (cursors.down.isDown) {
+            if (this.direction == 0) {
+                this.player.anims.play('atk_left', true);
+                this.swordHitbox.x = this.player.x - this.player.width/2.5;
+                this.swordHitbox.y = this.player.y;
+            } else if (this.direction == 1) {
+                this.player.anims.play('atk_right', true);
+                this.swordHitbox.x = this.player.x + this.player.width/2;
+                this.swordHitbox.y = this.player.y;
+            }
+        } else if (!cursors.right.isDown && !cursors.left.isDown && !cursors.down.isDown) {
             this.player.anims.play('idle', true);
-            this.player.body.setVelocityX(0);       
+            this.player.body.setVelocityX(0);    
+            this.swordHitbox.x = 0;
+            this.swordHitbox.y = 0;
         }
     }
 }
