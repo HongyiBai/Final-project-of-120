@@ -62,8 +62,7 @@ class MainMenu extends Phaser.Scene {
         //this.add.text(game.config.width/2, game.config.height/2 + 320, '↑ to Jump(press twice to double jump)', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2 + 140, '← to move left', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2 + 165, '→ to move right', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + 190, 'A to attack left', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + 215, 'D to attack right', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + 190, '↓ to attack', menuConfig).setOrigin(0.5);
 
         //loop background music
         var music = this.sound.add('arena_1');
