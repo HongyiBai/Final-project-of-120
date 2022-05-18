@@ -16,9 +16,14 @@ class Play extends Phaser.Scene {
         this.VELOCITY = 500;
         this.direction = 0;     //left = 0 and right = 1
         this.cameras.main.setBackgroundColor('#666');
+
+        this.slimeGroup = this.add.group({
+            classType: Slime,
+            runChildUpdate: true,
+        });
+
         //animations
         //idle
-        //hi
         this.anims.create({
             key: 'idle',
             frames: this.anims.generateFrameNames('character', {
@@ -32,6 +37,7 @@ class Play extends Phaser.Scene {
             repeat: -1,
         });
 
+        //run right
         this.anims.create({
             key: 'run_right',
             frames: this.anims.generateFrameNames('character', {
@@ -45,6 +51,7 @@ class Play extends Phaser.Scene {
             repeat: -1,
         });
 
+        //run left
         this.anims.create({
             key: 'run_left',
             frames: this.anims.generateFrameNames('character', {
@@ -58,6 +65,7 @@ class Play extends Phaser.Scene {
             repeat: -1,
         });
 
+        //attack right
         this.anims.create({
             key: 'atk_right',
             frames: this.anims.generateFrameNames('character', {
@@ -68,9 +76,9 @@ class Play extends Phaser.Scene {
                 zeroPad: 4
             }),
             frameRate: 15,
-            //repeatDelay: 2000
         });
 
+        //attack left
         this.anims.create({
             key: 'atk_left',
             frames: this.anims.generateFrameNames('character', {
@@ -81,7 +89,6 @@ class Play extends Phaser.Scene {
                 zeroPad: 4
             }),
             frameRate: 15,
-            //repeatDelay: 2000
         });
 
         this.ground = this.add.group();
@@ -99,26 +106,48 @@ class Play extends Phaser.Scene {
         this.player = this.physics.add.sprite(game.config.width/2, game.config.height - 59, 'character', 'idle_stand_0001').setScale(1.5);
         this.player.setCollideWorldBounds(true);
 
-        this.swordHitbox = this.add.rectangle(0, 0, this.player.width * 3, this.player.height * 1.5, 0, 0x000000, 0);
+        this.swordHitbox = this.add.rectangle(-100, -100, this.player.width * 3, this.player.height * 1.5, 0, 0x000000, 0);
         this.physics.add.existing(this.swordHitbox);
 
-        //this.slime = this.physics.add.sprite(game.config.width - 50, game.config.height - 51, 'slime');
-        this.slime = new Slime(this, game.config.width - 50, game.config.height - 51, 'slime', 0);
-        this.physics.add.existing(this.slime);
         cursors = this.input.keyboard.createCursorKeys();
 
         this.physics.add.collider(this.player, this.ground);
-        this.physics.add.collider(this.slime, this.ground);
         this.physics.add.collider(this.player,this.layer);
-        this.physics.add.collider(this.slime,this.layer);
 
         this.physics.world.wrap(this.player, 0);
 
-        this.physics.add.overlap(this.swordHitbox, this.slime, this.handleSlime, undefined, this);
+        this.nextSlime = this.time.addEvent({
+            callback: this.slimeAdd(),
+            callbackScope: this,
+            delay: 5,
+            timeScale: 5000,
+            loop: true
+        });
+    }
+
+    slimeAdd() {
+        let slime;
+        console.log("spawned");
+        slime = new Slime(this, Phaser.Math.RND.between(0,150), game.config.height - 51, 'slime', 0);
+        this.physics.add.existing(slime);
+        this.slimeGroup.add(slime);
     }
 
     update() {
-        this.slime.update();
+        this.slimeGroup.getChildren().forEach(function(slime){
+            //this.physics.add.overlap(slime, this.swordHitbox, slime.destroy());
+        }, this);
+        //setInterval(this.slimeAdd(), this.time.addEvent(10000));
+
+        //this.nextSlime = this.time.addEvent({delay: Phaser.Math.RND.between(5000,15000), callback: this.slimeAdd(), callbackScope: this});
+
+        //this.nextSlime = this.time.delayedCall(this.time.SECOND*50, this.slimeAdd(), null, this);
+
+        // this.clock = this.time.delayedCall(this.nextSlime.elapsed, () => {
+        //     //console.log("has been " + this.nextSlime + " secs");
+        //     this.slimeAdd();
+        //     this.nextSlime.elapsed = Phaser.Math.RND.between(5000,15000);
+        // }, null, this);
 
         if (cursors.left.isDown) {
             this.direction = 0;
@@ -150,9 +179,5 @@ class Play extends Phaser.Scene {
             this.swordHitbox.body.enable = false;
             this.physics.world.remove(this.swordHitbox.body);
         }
-    }
-
-    handleSlime(slime) {
-        this.slime.destroy();
     }
 }
