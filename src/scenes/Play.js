@@ -13,6 +13,23 @@ class Play extends Phaser.Scene {
 
     create() {
         this.background = this.add.tileSprite(0, 0, 680, 480, 'bk').setOrigin(0, 0);
+
+        this.score = 0;
+        this.nextspawn = 0;
+
+        let scoreConfig = {
+            fontFamily: 'Palatino Linotype',
+            fontSize: '30px',
+            backgroundColor: '#821a7b',
+            color: '#fcec3c',
+            align: 'left',
+            padding: {
+                bottom: 5,
+            },
+        }
+
+        this.scoretext = this.add.text(0, 0, 'Score: ' + this.score, scoreConfig);
+
         this.VELOCITY = 500;
         this.direction = 0;     //left = 0 and right = 1
         this.cameras.main.setBackgroundColor('#666');
@@ -115,39 +132,34 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.player,this.layer);
 
         this.physics.world.wrap(this.player, 0);
-
-        this.nextSlime = this.time.addEvent({
-            callback: this.slimeAdd(),
-            callbackScope: this,
-            delay: 5,
-            timeScale: 5000,
-            loop: true
-        });
     }
 
     slimeAdd() {
         let slime;
-        console.log("spawned");
-        slime = new Slime(this, Phaser.Math.RND.between(0,150), game.config.height - 51, 'slime', 0);
+        var test = Phaser.Math.Between(1, 100);
+        if (test % 2 == 0) {
+            slime = new Slime(this, Phaser.Math.RND.between(0,150), game.config.height - 51, 'slime', 0);
+        } else {
+            slime = new Slime(this, game.config.width - Phaser.Math.RND.between(0,150), game.config.height - 51, 'slime', 0);
+        }
         this.physics.add.existing(slime);
         this.slimeGroup.add(slime);
     }
 
     update() {
         this.slimeGroup.getChildren().forEach(function(slime){
-            //this.physics.add.overlap(slime, this.swordHitbox, slime.destroy());
+            if (slime.x + 12 >= this.swordHitbox.x && slime.x - 12 <= this.swordHitbox.x ) {
+                slime.destroy();
+                this.score += 10;
+                this.scoretext.text = 'Score: ' + this.score;
+            }
         }, this);
-        //setInterval(this.slimeAdd(), this.time.addEvent(10000));
-
-        //this.nextSlime = this.time.addEvent({delay: Phaser.Math.RND.between(5000,15000), callback: this.slimeAdd(), callbackScope: this});
-
-        //this.nextSlime = this.time.delayedCall(this.time.SECOND*50, this.slimeAdd(), null, this);
-
-        // this.clock = this.time.delayedCall(this.nextSlime.elapsed, () => {
-        //     //console.log("has been " + this.nextSlime + " secs");
-        //     this.slimeAdd();
-        //     this.nextSlime.elapsed = Phaser.Math.RND.between(5000,15000);
-        // }, null, this);
+        
+        if ((this.score - (this.score % 10)) / 10 == this.nextspawn) {
+            console.log(this.score / 10);
+            this.slimeAdd();
+            this.nextspawn += 1;
+        }
 
         if (cursors.left.isDown) {
             this.direction = 0;
@@ -178,6 +190,7 @@ class Play extends Phaser.Scene {
             this.player.body.setVelocityX(0);    
             this.swordHitbox.body.enable = false;
             this.physics.world.remove(this.swordHitbox.body);
+            this.swordHitbox.x = -100;
         }
     }
 }
