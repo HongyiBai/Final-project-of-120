@@ -6,9 +6,9 @@ class Slime extends Phaser.GameObjects.Sprite {
     }
 
     update() {
-        // move spaceship left.
+        // move slime.
         this.x += this.moveSpeed;
-        // wrap around from left edge to right edge
+        // checks if it should move left or right
         if(this.x >= 665) {
             this.moveSpeed = -1.5;
         } else if (this.x <= 0){

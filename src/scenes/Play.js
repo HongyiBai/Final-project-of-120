@@ -11,12 +11,13 @@ class Play extends Phaser.Scene {
         this.load.image('layer', 'layer.png');
     }
 
-    create() {
+    create() { 
+        //background
         this.background = this.add.tileSprite(0, 0, 680, 480, 'bk').setOrigin(0, 0);
 
+        //scoreconfig
         this.score = 0;
         this.nextspawn = 0;
-
         let scoreConfig = {
             fontFamily: 'Palatino Linotype',
             fontSize: '30px',
@@ -27,11 +28,12 @@ class Play extends Phaser.Scene {
                 bottom: 5,
             },
         }
-
         this.scoretext = this.add.text(0, 0, 'Score: ' + this.score, scoreConfig);
 
+        //player movement
         this.VELOCITY = 500;
         this.direction = 0;     //left = 0 and right = 1
+
         this.cameras.main.setBackgroundColor('#666');
 
         this.slimeGroup = this.add.group({
@@ -108,6 +110,7 @@ class Play extends Phaser.Scene {
             frameRate: 15,
         });
 
+        //temp ground
         this.ground = this.add.group();
         this.groundSprite = this.physics.add.sprite(0, game.config.height, 'ground').setScale(2);
         this.groundSprite.body.immovable = true;
@@ -120,9 +123,11 @@ class Play extends Phaser.Scene {
         this.layerSprite.body.allowGravity = false;
         this.layer.add(this.layerSprite);
 
+        //player
         this.player = this.physics.add.sprite(game.config.width/2, game.config.height - 59, 'character', 'idle_stand_0001').setScale(1.5);
         this.player.setCollideWorldBounds(true);
 
+        //sword hitbox
         this.swordHitbox = this.add.rectangle(-100, -100, this.player.width * 3, this.player.height * 1.5, 0, 0x000000, 0);
         this.physics.add.existing(this.swordHitbox);
 
@@ -130,10 +135,9 @@ class Play extends Phaser.Scene {
 
         this.physics.add.collider(this.player, this.ground);
         this.physics.add.collider(this.player,this.layer);
-
-        this.physics.world.wrap(this.player, 0);
     }
 
+    //spawns slime
     slimeAdd() {
         let slime;
         var test = Phaser.Math.Between(1, 100);
@@ -147,6 +151,7 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+        //checks if sword hits slime
         this.slimeGroup.getChildren().forEach(function(slime){
             if (slime.x + 12 >= this.swordHitbox.x && slime.x - 12 <= this.swordHitbox.x ) {
                 slime.destroy();
@@ -155,21 +160,26 @@ class Play extends Phaser.Scene {
             }
         }, this);
         
+        //spawns slime if score increases in every increment of 10
         if ((this.score - (this.score % 10)) / 10 == this.nextspawn) {
             console.log(this.score / 10);
             this.slimeAdd();
             this.nextspawn += 1;
         }
 
+        //player runs left
         if (cursors.left.isDown) {
             this.direction = 0;
             this.player.body.setVelocityX(-this.VELOCITY);
             this.player.anims.play('run_left', true);
+        //player runs right
         } else if (cursors.right.isDown) {
             this.direction = 1;
             this.player.body.setVelocityX(this.VELOCITY);
             this.player.anims.play('run_right', true);
+        //player attacks   
         } else if (cursors.down.isDown) {
+            //attacking left
             if (this.direction == 0) {
                 //this.sound.play('atk_sfx');
                 this.player.anims.play('atk_left', true);
@@ -177,6 +187,7 @@ class Play extends Phaser.Scene {
                 this.physics.world.add(this.swordHitbox.body);
                 this.swordHitbox.x = this.player.x - this.player.width/2.5;
                 this.swordHitbox.y = this.player.y;
+            //attacking right
             } else if (this.direction == 1) {
                 //this.sound.play('atk_sfx');
                 this.swordHitbox.body.enable = true;
@@ -185,6 +196,7 @@ class Play extends Phaser.Scene {
                 this.swordHitbox.x = this.player.x + this.player.width/2;
                 this.swordHitbox.y = this.player.y;
             }
+        //stop moving and attacking
         } else if (!cursors.right.isDown && !cursors.left.isDown && !cursors.down.isDown) {
             this.player.anims.play('idle', true);
             this.player.body.setVelocityX(0);    
