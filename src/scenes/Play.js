@@ -212,9 +212,9 @@ class Play extends Phaser.Scene {
         let flying;
         var test = Phaser.Math.Between(1, 100);
         if (test % 2 == 0) {
-            flying = new FlyingMon(this, Phaser.Math.RND.between(0,50), 240, 'flying_monster', 'flying_0001');
+            flying = new FlyingMon(this, Phaser.Math.RND.between(0,100), Phaser.Math.RND.between(240,280), 'flying_monster', 'flying_0001');
         } else {
-            flying = new FlyingMon(this, game.config.width - Phaser.Math.RND.between(0,50), 240, 'flying_monster', 'flying_0001');
+            flying = new FlyingMon(this, game.config.width - Phaser.Math.RND.between(0,100), Phaser.Math.RND.between(240,280), 'flying_monster', 'flying_0001');
         }
         this.physics.add.existing(flying);
         flying.body.allowGravity = false;
