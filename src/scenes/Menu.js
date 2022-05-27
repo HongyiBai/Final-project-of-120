@@ -59,10 +59,10 @@ class MainMenu extends Phaser.Scene {
         //controls text
         let control = this.add.text(game.config.width/2, game.config.height/2 + 100, 'Controls', menuConfig).setOrigin(0.5);
         menuConfig.fontSize = '20px';
-        //this.add.text(game.config.width/2, game.config.height/2 + 320, '↑ to Jump(press twice to double jump)', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2 + 140, '← to move left', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2 + 165, '→ to move right', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + 190, '↓ to attack', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + 190, 'Space to Jump(press twice to double jump)', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + 215, '↓ to attack', menuConfig).setOrigin(0.5);
 
         //loop background music
         var music = this.sound.add('arena_1');
@@ -81,25 +81,27 @@ class GameMenu extends Phaser.Scene {
         //this.load.image('endbackground', './assets/endingbg.png');
     }
 
-    // init (data) {
-    //     this.finalscore = data.score;
-    // }
+    init (data) {
+        this.finalscore = data.score;
+    }
     
     create() {
         let endConfig = {
             fontFamily: 'Palatino Linotype',
-            fontSize: '100px',
+            fontSize: '80px',
             color: 'red',
             align: 'center',
         }
         // game over background
         //this.endingbackground = this.add.tileSprite(0, 0, 1280, 960, 'endbackground').setOrigin(0, 0);
+
         //game over text
-        this.add.text(game.config.width/2, game.config.height/2 - 200, 'GAME OVER', endConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 - 150, 'GAME OVER', endConfig).setOrigin(0.5);
 
         //restart button
-        endConfig.fontSize = "60px";
-        this.add.text(game.config.width/2, game.config.height/2 - 100, 'Score: ' + this.finalscore, endConfig).setOrigin(0.5);
+        endConfig.fontSize = "50px";
+        this.add.text(game.config.width/2, game.config.height/2 - 80, 'Score: ' + this.finalscore, endConfig).setOrigin(0.5);
+        endConfig.fontSize = "35px";
         let restart = this.add.text(game.config.width/2, game.config.height/2 + 50, 'RESTART', endConfig).setOrigin(0.5);
         restart.setInteractive();
         restart.on('pointerover', () => {
@@ -115,7 +117,7 @@ class GameMenu extends Phaser.Scene {
             
         })
         //return to main menu button
-        let main = this.add.text(game.config.width/2, game.config.height/2 + 150, 'MAIN MENU', endConfig).setOrigin(0.5);
+        let main = this.add.text(game.config.width/2, game.config.height/2 + 100, 'MAIN MENU', endConfig).setOrigin(0.5);
         main.setInteractive();
         main.on('pointerover', () => {
             main.setScale(1.3);
