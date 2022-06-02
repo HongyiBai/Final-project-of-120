@@ -428,7 +428,7 @@ class Play extends Phaser.Scene {
                     this.swordHitbox.y = this.player.y;
                 }
         //player not moving 
-        }   else if (!cursors.right.isDown && !cursors.left.isDown) {
+        }   else if (!cursors.right.isDown && !cursors.left.isDown && !cursors.down.isDown) {
                 this.player.anims.play('idle', true);
                 this.player.body.setVelocityX(0);
                 this.swordHitbox.body.enable = false;
