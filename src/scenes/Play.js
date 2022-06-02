@@ -345,7 +345,7 @@ class Play extends Phaser.Scene {
         }
 
         //spawn boss once reaching 500
-        if (this.score >= 0 && !this.boss_spawned) {
+        if (this.score >= 500 && !this.boss_spawned) {
             this.boss_spawned = true;
             this.boss = new Boss (this, game.config.width/2, game.config.width/2 - 100, 'boss', 'stand_0001').setOrigin(0,0).setScale(2);
             let scoreConfig = {
@@ -408,7 +408,7 @@ class Play extends Phaser.Scene {
                     this.swordHitbox.y = -100;
                 }
         //player attack 
-        }   else if (Phaser.Input.Keyboard.JustDown(this.DOWN)) {
+        }   else if (cursors.down.isDown) {
                 //attacking left
                 if (this.direction == 0) {
                     //this.sound.play('atk_sfx');
