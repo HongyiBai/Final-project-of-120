@@ -70,7 +70,7 @@ class GameMenu extends Phaser.Scene {
     
     preload() {
         this.load.path = 'assets/';
-        this.load.image('gameover', 'endingscenefinal.png');
+        this.load.image('gameover', 'Endingscenefinal.png');
     }
 
     init (data) {
