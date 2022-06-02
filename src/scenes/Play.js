@@ -38,6 +38,7 @@ class Play extends Phaser.Scene {
         //player movement
         this.playerJumps = 0;
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.DOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.VELOCITY = 500;
         this.direction = 0;     //left = 0 and right = 1
 
@@ -303,15 +304,15 @@ class Play extends Phaser.Scene {
                 obj1.destroy();
                 this.score += 5;
                 this.scoretext.text = 'Score: ' + this.score;
-                //this.slimeAdd();
+                this.slimeAdd();
             })
 
             //checks if player gets hit by slime
             this.physics.add.overlap(slime, this.player, (obj1, obj2) => {
                 obj1.destroy();
                 this.score += 1;
-                //this.slimeAdd();
-                //this.lives -= 5;
+                this.slimeAdd();
+                this.lives -= 5;
                 this.livestext.text = "HP: " + this.lives;
                 this.scoretext.text = 'Score: ' + this.score;
             })
@@ -330,7 +331,7 @@ class Play extends Phaser.Scene {
             this.physics.add.overlap(fly, this.player, (obj1, obj2) => {
                 obj1.destroy();
                 this.score += 5;
-                //this.lives -= 10;
+                this.lives -= 10;
                 this.livestext.text = "HP: " + this.lives;
                 this.scoretext.text = 'Score: ' + this.score;
             })
@@ -343,7 +344,7 @@ class Play extends Phaser.Scene {
         }
 
         //spawn boss once reaching 500
-        if (this.score >= 1230 && !this.boss_spawned) {
+        if (this.score >= 0 && !this.boss_spawned) {
             this.boss_spawned = true;
             this.boss = new Boss (this, game.config.width/2, game.config.width/2 - 100, 'boss', 'stand_0001').setOrigin(0,0).setScale(2);
             let scoreConfig = {
@@ -373,7 +374,6 @@ class Play extends Phaser.Scene {
             this.physics.add.overlap(this.boss, this.swordHitbox, (obj1, obj2) => {
                 this.bosshp -= 10;
                 this.bosshptext.text = "Boss HP: " + this.bosshp;
-                this.time.delayedCall(5000);
                 if (this.bosshp <= 0) {
                     obj1.destroy();
                     this.bosshptext.destroy();
@@ -406,8 +406,8 @@ class Play extends Phaser.Scene {
                     this.swordHitbox.x = -100;
                     this.swordHitbox.y = -100;
                 }
-        //player not moving 
-        }   else if (cursors.down.isDown) {
+        //player attack 
+        }   else if (Phaser.Input.Keyboard.JustDown(this.DOWN)) {
                 //attacking left
                 if (this.direction == 0) {
                     //this.sound.play('atk_sfx');
@@ -426,7 +426,8 @@ class Play extends Phaser.Scene {
                     this.swordHitbox.x = this.player.x + this.player.width/2;
                     this.swordHitbox.y = this.player.y;
                 }
-        }   else if (!cursors.right.isDown && !cursors.left.isDown && !cursors.down.isDown) {
+        //player not moving 
+        }   else if (!cursors.right.isDown && !cursors.left.isDown) {
                 this.player.anims.play('idle', true);
                 this.player.body.setVelocityX(0);
                 this.swordHitbox.body.enable = false;
