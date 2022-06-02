@@ -16,7 +16,7 @@ class FlyingMon extends Phaser.GameObjects.Sprite {
         } else if (this.x <= 0){
             this.moveSpeed = 2;
         }
-        if (this.y <= 240) {
+        if (this.y <= 100) {
             this.fly = 1;
         } else if (this.y >= 433) {
             this.fly = -1;

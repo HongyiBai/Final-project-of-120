@@ -8,7 +8,8 @@ class Play extends Phaser.Scene {
         this.load.atlas("character",'player.png','player.json');
         this.load.atlas("slime",'slime.png','slime.json');
         this.load.atlas("flying_monster",'flying_monster.png','flying_monster.json');
-        this.load.image('bk', 'background for final project(test).png');      
+        this.load.atlas('boss', 'boss.png', 'boss.json');
+        this.load.image('bk', 'background.png');      
         this.load.image('layer', 'layer.png');
     }
 
@@ -20,6 +21,8 @@ class Play extends Phaser.Scene {
         this.lives = 100;
         this.score = 0;
         this.nextspawn = 20;
+        this.boss_spawned = false;
+        this.bosshp = 200;
         let scoreConfig = {
             fontFamily: 'Palatino Linotype',
             fontSize: '30px',
@@ -131,7 +134,7 @@ class Play extends Phaser.Scene {
                 suffix: '',
                 zeroPad: 4
             }),
-            frameRate: 2,
+            frameRate: 3,
             repeat: -1,
             yoyo: true,
         });
@@ -149,6 +152,75 @@ class Play extends Phaser.Scene {
             frameRate: 3,
             repeat: -1,
         });
+        
+        //boss animation
+        //walk right
+        this.anims.create({
+            key: 'boss_walk_right',
+            frames: this.anims.generateFrameNames('boss', {
+                prefix: 'walkright_',
+                start: 1,
+                end: 5,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
+
+        //walk left
+        this.anims.create({
+            key: 'boss_walk_left',
+            frames: this.anims.generateFrameNames('boss', {
+                prefix: 'walkleft_',
+                start: 1,
+                end: 5,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
+
+        //idle
+        this.anims.create({
+            key: 'boss_idle',
+            frames: this.anims.generateFrameNames('boss', {
+                prefix: 'stand_',
+                start: 1,
+                end: 2,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
+
+        //attack right
+        this.anims.create({
+            key: 'boss_atk_right',
+            frames: this.anims.generateFrameNames('boss', {
+                prefix: 'attackright_',
+                start: 1,
+                end: 5,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 3,
+        });
+
+        //attack left
+        this.anims.create({
+            key: 'boss_atk_left',
+            frames: this.anims.generateFrameNames('boss', {
+                prefix: 'attackleft_',
+                start: 1,
+                end: 5,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 3,
+        });
 
         //temp ground
         this.ground = this.add.group();
@@ -156,12 +228,7 @@ class Play extends Phaser.Scene {
         this.groundSprite.body.immovable = true;
         this.groundSprite.body.allowGravity = false;
         this.ground.add(this.groundSprite);
-
-        this.layer = this.add.group();
-        this.layerSprite = this.physics.add.sprite(game.config.width, game.config.height, 'layer').setScale(2);
-        this.layerSprite.body.immovable = true;
-        this.layerSprite.body.allowGravity = false;
-        this.layer.add(this.layerSprite);
+        this.groundSprite.alpha = 0;
 
         //player
         this.player = this.physics.add.sprite(game.config.width/2, game.config.height - 59, 'character', 'idle_stand_0001').setScale(1.5);
@@ -197,24 +264,26 @@ class Play extends Phaser.Scene {
     slimeAdd() {
         let slime;
         var test = Phaser.Math.Between(1, 100);
+        var size = Phaser.Math.FloatBetween(0.75, 1.5);
         if (test % 2 == 0) {
-            slime = new Slime(this, Phaser.Math.RND.between(0,150), game.config.height - 47, 'slime', 'slime_0001').setScale(1.2);
+            slime = new Slime(this, Phaser.Math.RND.between(0,150), game.config.height - 50, 'slime', 'slime_0001').setOrigin(0.5).setScale(size);
+            this.physics.add.collider(slime, this.ground);
         } else {
-            slime = new Slime(this, game.config.width - Phaser.Math.RND.between(0,150), game.config.height - 47, 'slime', 'slime_0001').setScale(1.2);
+            slime = new Slime(this, game.config.width - Phaser.Math.RND.between(0,150), game.config.height - 50, 'slime', 'slime_0001').setOrigin(0.5).setScale(size);
+            this.physics.add.collider(slime, this.ground);
         }
         this.physics.add.existing(slime);
         this.slimeGroup.add(slime);
         slime.anims.play('slime_walk');
-        this.physics.add.collider(slime, this.ground);
     }
 
     flyingAdd() {
         let flying;
         var test = Phaser.Math.Between(1, 100);
         if (test % 2 == 0) {
-            flying = new FlyingMon(this, Phaser.Math.RND.between(0,100), Phaser.Math.RND.between(240,280), 'flying_monster', 'flying_0001');
+            flying = new FlyingMon(this, Phaser.Math.RND.between(0,100), Phaser.Math.RND.between(240,280), 'flying_monster', 'flying_0001').setScale(1.1);
         } else {
-            flying = new FlyingMon(this, game.config.width - Phaser.Math.RND.between(0,100), Phaser.Math.RND.between(240,280), 'flying_monster', 'flying_0001');
+            flying = new FlyingMon(this, game.config.width - Phaser.Math.RND.between(0,100), Phaser.Math.RND.between(240,280), 'flying_monster', 'flying_0001').setScale(1.1);
         }
         this.physics.add.existing(flying);
         flying.body.allowGravity = false;
@@ -234,15 +303,15 @@ class Play extends Phaser.Scene {
                 obj1.destroy();
                 this.score += 5;
                 this.scoretext.text = 'Score: ' + this.score;
-                this.slimeAdd();
+                //this.slimeAdd();
             })
 
             //checks if player gets hit by slime
             this.physics.add.overlap(slime, this.player, (obj1, obj2) => {
                 obj1.destroy();
                 this.score += 1;
-                this.slimeAdd();
-                this.lives -= 5;
+                //this.slimeAdd();
+                //this.lives -= 5;
                 this.livestext.text = "HP: " + this.lives;
                 this.scoretext.text = 'Score: ' + this.score;
             })
@@ -261,16 +330,56 @@ class Play extends Phaser.Scene {
             this.physics.add.overlap(fly, this.player, (obj1, obj2) => {
                 obj1.destroy();
                 this.score += 5;
-                this.lives -= 10;
+                //this.lives -= 10;
                 this.livestext.text = "HP: " + this.lives;
                 this.scoretext.text = 'Score: ' + this.score;
             })
         }, this);
 
-        //spawns flying monster in every 20 score increments
+        //spawns flying monster every 20 points
         if (this.score - (this.score % 20) == this.nextspawn) {
             this.flyingAdd();
             this.nextspawn += 20;
+        }
+
+        //spawn boss once reaching 500
+        if (this.score >= 0 && !this.boss_spawned) {
+            this.boss_spawned = true;
+            this.boss = new Boss (this, game.config.width/2, game.config.width/2 - 100, 'boss', 'stand_0001').setOrigin(0,0).setScale(2);
+            let scoreConfig = {
+                fontFamily: 'Palatino Linotype',
+                fontSize: '30px',
+                color: 'red',
+                align: 'center',
+                padding: {
+                    bottom: 5,
+                },
+            }
+            this.bosshptext = this.add.text(game.config.width/2, 0, 'Boss HP: ' + this.bosshp, scoreConfig).setOrigin(0.5,0);
+            this.physics.add.existing(this.boss);
+            this.physics.add.collider(this.boss, this.ground);
+            this.boss.anims.play('boss_walk_right', true);
+        }
+        
+        if (this.boss.y >= 380) {
+            this.boss.body.allowGravity = false;
+            this.boss.anims.play('boss_walk_right', true);
+        }
+        if (this.boss_spawned) {
+            this.boss.update();
+            // this.physics.add.overlap(this.boss, this.player, (obj1, obj2) => {
+            //     this.lives -= 20;
+            //     this.livestext.text = "HP: " + this.lives;
+            // },) 
+            this.physics.add.overlap(this.boss, this.swordHitbox, (obj1, obj2) => {
+                this.bosshp -= 10;
+                this.bosshptext.text = "Boss HP: " + this.bosshp;
+                if (this.bosshp <= 0) {
+                    obj1.destroy();
+                    this.bosshptext.destroy();
+                    this.scene.start("endScene", {score: this.score});
+                }
+            },) 
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.keySpace)) {
@@ -301,7 +410,7 @@ class Play extends Phaser.Scene {
         }   else if (cursors.down.isDown) {
                 //attacking left
                 if (this.direction == 0) {
-                //this.sound.play('atk_sfx');
+                    //this.sound.play('atk_sfx', {delay: 1});
                     this.player.anims.play('atk_left', true);
                     this.swordHitbox.body.enable = true;
                     this.physics.world.add(this.swordHitbox.body);
@@ -309,7 +418,7 @@ class Play extends Phaser.Scene {
                     this.swordHitbox.y = this.player.y;
                 //attacking right
                 } else if (this.direction == 1) {
-                    //this.sound.play('atk_sfx');
+                    //this.sound.play('atk_sfx', {delay: 1});
                     this.swordHitbox.body.enable = true;
                     this.physics.world.add(this.swordHitbox.body);
                     this.player.anims.play('atk_right', true);

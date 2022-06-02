@@ -5,18 +5,17 @@ class MainMenu extends Phaser.Scene {
     
     preload() {
         this.load.path = 'assets/';
-        //this.load.audio('bgm', './assets/endless_runner.mp3');
+        this.load.image('main', 'mainmenu.png');
         this.load.image('ground', 'ground.png');
         this.load.audio('arena_1', 'Arena_1.mp3');
         this.load.audio('atk_sfx', 'attackSFX.wav');
-        //this.load.image('menubackground', './assets/menubg.png');
     }
     
     create() {
-        let menuConfig = {
+        let controlConfig = {
             fontFamily: 'Palatino Linotype',
-            fontSize: '100px',
-            color: '#843605',
+            fontSize: '25px',
+            color: '#1F4659',
             align: 'center',
             padding: {
                 top: 5,
@@ -26,7 +25,7 @@ class MainMenu extends Phaser.Scene {
         }
         let startConfig = {
             fontFamily: 'Palatino Linotype',
-            fontSize: '50px',
+            fontSize: '30px',
             color: '#FFFFFF',
             align: 'center',
             padding: {
@@ -35,34 +34,27 @@ class MainMenu extends Phaser.Scene {
             },
             fixedWidth: 0
         }
-        //
+
         //menu background
-        //this.menubackground = this.add.tileSprite(0, 0, 1280, 960, 'menubackground').setOrigin(0, 0);
-        // title text
-        this.add.text(game.config.width/2, game.config.height/2 - 100, 'Title', menuConfig).setOrigin(0.5);
+        this.background = this.add.tileSprite(0, 0, 1586, 1116, 'main').setScale(0.43).setOrigin(0,0);
 
         // start button
-        menuConfig.fontSize = "50px";
-        let start = this.add.text(game.config.width/2, game.config.height/2 + 10, 'Start', startConfig).setOrigin(0.5);
+        let start = this.add.text(game.config.width - 80 , game.config.height/2 - 20, 'Start', startConfig).setOrigin(0.5);
         start.setInteractive();
         start.on('pointerover', () => {
-            start.setScale(1.3);
+            start.setScale(1.2);
         })
         start.on('pointerout', () => {
             start.setScale(1);
         }) 
         start.on('pointerdown', () => {
             this.scene.start("playScene");
-            //this.sound.play('sfx_select');
         })
 
         //controls text
-        let control = this.add.text(game.config.width/2, game.config.height/2 + 100, 'Controls', menuConfig).setOrigin(0.5);
-        menuConfig.fontSize = '20px';
-        this.add.text(game.config.width/2, game.config.height/2 + 140, '← to move left', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + 165, '→ to move right', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + 190, 'Space to Jump(press twice to double jump)', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + 215, '↓ to attack', menuConfig).setOrigin(0.5);
+        let control = this.add.text(200, 233, 'Controls', controlConfig).setOrigin(0.5);
+        controlConfig.fontSize = '15px';
+        this.add.text(200, 290, '← to move left\n→ to move right\nSpace to Jump\n(2x to double jump)\n↓ to attack', controlConfig).setOrigin(0.5);
 
         //loop background music
         var music = this.sound.add('arena_1');
@@ -77,8 +69,8 @@ class GameMenu extends Phaser.Scene {
     }
     
     preload() {
-        //this.load.audio('sfx_select', './assets/blip_select12.wav');
-        //this.load.image('endbackground', './assets/endingbg.png');
+        this.load.path = 'assets/';
+        this.load.image('gameover', 'gameover.png');
     }
 
     init (data) {
@@ -88,39 +80,38 @@ class GameMenu extends Phaser.Scene {
     create() {
         let endConfig = {
             fontFamily: 'Palatino Linotype',
-            fontSize: '80px',
+            fontSize: '60px',
             color: 'red',
             align: 'center',
         }
         // game over background
-        //this.endingbackground = this.add.tileSprite(0, 0, 1280, 960, 'endbackground').setOrigin(0, 0);
+        this.background = this.add.tileSprite(0, 0, 680, 480, 'gameover').setOrigin(0, 0);
 
         //game over text
-        this.add.text(game.config.width/2, game.config.height/2 - 150, 'GAME OVER', endConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 - 160, 'GAME OVER', endConfig).setOrigin(0.5);
+
+        //score
+        endConfig.fontSize = "30px";
+        this.add.text(game.config.width/2, game.config.height/2 - 115, 'Score: ' + this.finalscore, endConfig).setOrigin(0.5);
 
         //restart button
-        endConfig.fontSize = "50px";
-        this.add.text(game.config.width/2, game.config.height/2 - 80, 'Score: ' + this.finalscore, endConfig).setOrigin(0.5);
-        endConfig.fontSize = "35px";
-        let restart = this.add.text(game.config.width/2, game.config.height/2 + 50, 'RESTART', endConfig).setOrigin(0.5);
+        let restart = this.add.text(game.config.width - 115, game.config.height/2 + 65, 'RESTART', endConfig).setOrigin(0.5);
         restart.setInteractive();
         restart.on('pointerover', () => {
-            restart.setScale(1.3);
+            restart.setScale(1.2);
         })
         restart.on('pointerout', () => {
             restart.setScale(1);
         }) 
         restart.on('pointerdown', () => {
-            
-            this.scene.start("playScene");
-            //this.sound.play('sfx_select');
-            
+            this.scene.start("playScene");           
         })
+
         //return to main menu button
-        let main = this.add.text(game.config.width/2, game.config.height/2 + 100, 'MAIN MENU', endConfig).setOrigin(0.5);
+        let main = this.add.text(game.config.width - 115, game.config.height/2 + 105, 'MAIN MENU', endConfig).setOrigin(0.5);
         main.setInteractive();
         main.on('pointerover', () => {
-            main.setScale(1.3);
+            main.setScale(1.2);
         })
         main.on('pointerout', () => {
             main.setScale(1);
@@ -128,7 +119,6 @@ class GameMenu extends Phaser.Scene {
         main.on('pointerdown', () => {
             this.sound.stopAll();
             this.scene.start("mainScene");
-            //this.sound.play('sfx_select');
         })
     }
 }
