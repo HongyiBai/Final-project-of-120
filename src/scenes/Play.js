@@ -55,7 +55,7 @@ class Play extends Phaser.Scene {
             runChildUpdate: true,
         });
 
-        //animations
+        //player animations
         //idle
         this.anims.create({
             key: 'idle',
@@ -108,7 +108,7 @@ class Play extends Phaser.Scene {
                 suffix: '',
                 zeroPad: 4
             }),
-            frameRate: 15,
+            frameRate: 20,
         });
 
         //attack left
@@ -121,7 +121,7 @@ class Play extends Phaser.Scene {
                 suffix: '',
                 zeroPad: 4
             }),
-            frameRate: 15,
+            frameRate: 20,
         });
 
         //slime animation
@@ -343,7 +343,7 @@ class Play extends Phaser.Scene {
         }
 
         //spawn boss once reaching 500
-        if (this.score >= 0 && !this.boss_spawned) {
+        if (this.score >= 1230 && !this.boss_spawned) {
             this.boss_spawned = true;
             this.boss = new Boss (this, game.config.width/2, game.config.width/2 - 100, 'boss', 'stand_0001').setOrigin(0,0).setScale(2);
             let scoreConfig = {
@@ -361,19 +361,19 @@ class Play extends Phaser.Scene {
             this.boss.anims.play('boss_walk_right', true);
         }
         
-        if (this.boss.y >= 380) {
-            this.boss.body.allowGravity = false;
-            this.boss.anims.play('boss_walk_right', true);
-        }
         if (this.boss_spawned) {
+            if (this.boss.y >= 380) {
+                this.boss.body.allowGravity = false;
+            }
             this.boss.update();
             // this.physics.add.overlap(this.boss, this.player, (obj1, obj2) => {
             //     this.lives -= 20;
             //     this.livestext.text = "HP: " + this.lives;
-            // },) 
+            // },)
             this.physics.add.overlap(this.boss, this.swordHitbox, (obj1, obj2) => {
                 this.bosshp -= 10;
                 this.bosshptext.text = "Boss HP: " + this.bosshp;
+                this.time.delayedCall(5000);
                 if (this.bosshp <= 0) {
                     obj1.destroy();
                     this.bosshptext.destroy();
@@ -410,15 +410,16 @@ class Play extends Phaser.Scene {
         }   else if (cursors.down.isDown) {
                 //attacking left
                 if (this.direction == 0) {
-                    //this.sound.play('atk_sfx', {delay: 1});
-                    this.player.anims.play('atk_left', true);
+                    //this.sound.play('atk_sfx');
+                    //this.player.anims.play('atk_left');
+                    this.player.play('atk_left', true);
                     this.swordHitbox.body.enable = true;
-                    this.physics.world.add(this.swordHitbox.body);
+                    this.physics.world.add(this.swordHitbox.body, true);
                     this.swordHitbox.x = this.player.x - this.player.width/2.5;
                     this.swordHitbox.y = this.player.y;
                 //attacking right
                 } else if (this.direction == 1) {
-                    //this.sound.play('atk_sfx', {delay: 1});
+                    //this.sound.play('atk_sfx');
                     this.swordHitbox.body.enable = true;
                     this.physics.world.add(this.swordHitbox.body);
                     this.player.anims.play('atk_right', true);

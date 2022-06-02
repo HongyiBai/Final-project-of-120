@@ -5,7 +5,7 @@ class MainMenu extends Phaser.Scene {
     
     preload() {
         this.load.path = 'assets/';
-        this.load.image('main', 'mainmenu.png');
+        this.load.image('main', 'mainmenufinal.png');
         this.load.image('ground', 'ground.png');
         this.load.audio('arena_1', 'Arena_1.mp3');
         this.load.audio('atk_sfx', 'attackSFX.wav');
@@ -36,7 +36,7 @@ class MainMenu extends Phaser.Scene {
         }
 
         //menu background
-        this.background = this.add.tileSprite(0, 0, 1586, 1116, 'main').setScale(0.43).setOrigin(0,0);
+        this.background = this.add.tileSprite(0, 0, 680, 480, 'main').setOrigin(0,0);
 
         // start button
         let start = this.add.text(game.config.width - 80 , game.config.height/2 - 20, 'Start', startConfig).setOrigin(0.5);
@@ -70,7 +70,7 @@ class GameMenu extends Phaser.Scene {
     
     preload() {
         this.load.path = 'assets/';
-        this.load.image('gameover', 'gameover.png');
+        this.load.image('gameover', 'endingscenefinal.png');
     }
 
     init (data) {
