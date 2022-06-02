@@ -11,6 +11,7 @@ class Play extends Phaser.Scene {
         this.load.atlas('boss', 'boss.png', 'boss.json');
         this.load.image('bk', 'background.png');      
         this.load.image('layer', 'layer.png');
+        this.load.image('bk','finalbackground.png');
     }
 
     create() { 
