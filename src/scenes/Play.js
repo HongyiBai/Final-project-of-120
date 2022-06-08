@@ -363,8 +363,8 @@ class Play extends Phaser.Scene {
             this.nextspawn += 20;
         }
 
-        //spawn boss once reaching 500
-        if (this.score >= 500 && !this.boss_spawned) {
+        //spawn boss once reaching 400
+        if (this.score >= 400 && !this.boss_spawned) {
             this.boss_spawned = true;
             this.boss = new Boss (this, game.config.width/2, game.config.width/2 - 100, 'boss', 'stand_0001').setOrigin(0,0).setScale(2);
             let scoreConfig = {
