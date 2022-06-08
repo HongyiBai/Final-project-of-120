@@ -8,15 +8,20 @@ class Play extends Phaser.Scene {
         this.load.atlas("character",'player.png','player.json');
         this.load.atlas("slime",'slime.png','slime.json');
         this.load.atlas("flying_monster",'flying_monster.png','flying_monster.json');
-        this.load.atlas('boss', 'boss.png', 'boss.json');
-        this.load.image('bk', 'background.png');      
+        this.load.atlas('boss', 'boss.png', 'boss.json');  
         this.load.image('layer', 'layer.png');
         this.load.image('bk','finalbackground.png');
+        this.load.audio('gamemusic', 'playscenemusic.mp3');
     }
 
     create() { 
         //background
         this.background = this.add.tileSprite(0, 0, 680, 480, 'bk').setOrigin(0, 0);
+
+        //music
+        var music = this.sound.add('gamemusic');
+        music.setLoop(true);
+        music.play();
 
         //scoreconfig
         this.lives = 100;
@@ -295,7 +300,7 @@ class Play extends Phaser.Scene {
 
     update() {
         if (this.lives <= 0) {
-            this.scene.start("endScene", {score: this.score});
+            this.scene.start("endScene", {score: this.score, win: false});
         }
 
         //slime collision check

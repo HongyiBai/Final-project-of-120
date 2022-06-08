@@ -8,7 +8,7 @@ class MainMenu extends Phaser.Scene {
         this.load.image('ground', 'ground.png');
         this.load.audio('arena_1', 'Arena_1.mp3');
         this.load.audio('atk_sfx', 'attackSFX.wav');
-        this.load.image('background', 'Mainmenufinal.png');
+        this.load.image('background', 'mainmenubkfinal.png');
     }
     
     create() {
@@ -48,6 +48,7 @@ class MainMenu extends Phaser.Scene {
             start.setScale(1);
         }) 
         start.on('pointerdown', () => {
+            this.sound.stopAll();
             this.scene.start("playScene");
         })
 
@@ -70,11 +71,13 @@ class GameMenu extends Phaser.Scene {
     
     preload() {
         this.load.path = 'assets/';
-        this.load.image('gameover', 'Endingscenefinal.png');
+        this.load.image('gamelose', 'lostbk.png');
+        this.load.image('gamewin', 'victoryscenebk.png');
     }
 
     init (data) {
         this.finalscore = data.score;
+        this.win = data.win;
     }
     
     create() {
@@ -85,40 +88,74 @@ class GameMenu extends Phaser.Scene {
             align: 'center',
         }
         // game over background
-        this.background = this.add.tileSprite(0, 0, 680, 480, 'gameover').setOrigin(0, 0);
+        if (this.win) {
+            this.background = this.add.tileSprite(0, 0, 680, 480, 'gamewin').setOrigin(0, 0);
+            endConfig.fontSize = "30px";
+            endConfig.color = 'cyan';
+            this.add.text(game.config.width - 100, game.config.height/2 - 70, this.finalscore, endConfig).setOrigin(0.5);
 
-        //game over text
-        this.add.text(game.config.width/2, game.config.height/2 - 160, 'GAME OVER', endConfig).setOrigin(0.5);
+            //restart button
+            let restart = this.add.text(115, game.config.height/2 + 65, 'RESTART', endConfig).setOrigin(0.5);
+            restart.setInteractive();
+            restart.on('pointerover', () => {
+                restart.setScale(1.2);
+            })
+            restart.on('pointerout', () => {
+                restart.setScale(1);
+            }) 
+            restart.on('pointerdown', () => {
+                this.scene.start("playScene");           
+            })
+    
+            //return to main menu button
+            let main = this.add.text(115, game.config.height/2 + 105, 'MAIN MENU', endConfig).setOrigin(0.5);
+            main.setInteractive();
+            main.on('pointerover', () => {
+                main.setScale(1.2);
+            })
+            main.on('pointerout', () => {
+                main.setScale(1);
+            }) 
+            main.on('pointerdown', () => {
+                this.sound.stopAll();
+                this.scene.start("mainScene");
+            })
+        } else {
+            this.background = this.add.tileSprite(0, 0, 680, 480, 'gamelose').setOrigin(0, 0);
 
-        //score
-        endConfig.fontSize = "30px";
-        this.add.text(game.config.width/2, game.config.height/2 - 115, 'Score: ' + this.finalscore, endConfig).setOrigin(0.5);
-
-        //restart button
-        let restart = this.add.text(game.config.width - 115, game.config.height/2 + 65, 'RESTART', endConfig).setOrigin(0.5);
-        restart.setInteractive();
-        restart.on('pointerover', () => {
-            restart.setScale(1.2);
-        })
-        restart.on('pointerout', () => {
-            restart.setScale(1);
-        }) 
-        restart.on('pointerdown', () => {
-            this.scene.start("playScene");           
-        })
-
-        //return to main menu button
-        let main = this.add.text(game.config.width - 115, game.config.height/2 + 105, 'MAIN MENU', endConfig).setOrigin(0.5);
-        main.setInteractive();
-        main.on('pointerover', () => {
-            main.setScale(1.2);
-        })
-        main.on('pointerout', () => {
-            main.setScale(1);
-        }) 
-        main.on('pointerdown', () => {
-            this.sound.stopAll();
-            this.scene.start("mainScene");
-        })
+            //game over text
+            this.add.text(game.config.width/2, game.config.height/2 - 160, 'GAME OVER', endConfig).setOrigin(0.5);
+    
+            //score
+            endConfig.fontSize = "30px";
+            this.add.text(game.config.width/2, game.config.height/2 - 115, 'Score: ' + this.finalscore, endConfig).setOrigin(0.5);
+    
+            //restart button
+            let restart = this.add.text(game.config.width - 115, game.config.height/2 + 65, 'RESTART', endConfig).setOrigin(0.5);
+            restart.setInteractive();
+            restart.on('pointerover', () => {
+                restart.setScale(1.2);
+            })
+            restart.on('pointerout', () => {
+                restart.setScale(1);
+            }) 
+            restart.on('pointerdown', () => {
+                this.scene.start("playScene");           
+            })
+    
+            //return to main menu button
+            let main = this.add.text(game.config.width - 115, game.config.height/2 + 105, 'MAIN MENU', endConfig).setOrigin(0.5);
+            main.setInteractive();
+            main.on('pointerover', () => {
+                main.setScale(1.2);
+            })
+            main.on('pointerout', () => {
+                main.setScale(1);
+            }) 
+            main.on('pointerdown', () => {
+                this.sound.stopAll();
+                this.scene.start("mainScene");
+            }) 
+        }
     }
 }
