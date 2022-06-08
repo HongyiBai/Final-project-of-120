@@ -53,8 +53,10 @@ class MainMenu extends Phaser.Scene {
         })
 
         //controls text
+        controlConfig.color = '#a6590c';
         let control = this.add.text(200, 233, 'Controls', controlConfig).setOrigin(0.5);
         controlConfig.fontSize = '15px';
+        controlConfig.color = '#d87512';
         this.add.text(200, 290, '← to move left\n→ to move right\nSpace to Jump\n(2x to double jump)\n↓ to attack', controlConfig).setOrigin(0.5);
 
         //loop background music

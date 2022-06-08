@@ -14,9 +14,19 @@ class Boss extends Phaser.GameObjects.Sprite {
         if(this.x >= 615) {
             this.anims.play('boss_walk_left', true);
             this.moveSpeed = -.5;
-        } else if (this.x <= 0){
+            this.body.setVelocity(0);
+        } else if (this.x <= 10){
             this.anims.play('boss_walk_right', true);
             this.moveSpeed = .5;
+            this.body.setVelocity(0);
+        }
+    }
+
+    attack() {
+        if (this.moveSpeed == -.5) {
+            this.anims.play('boss_atk_left', true);
+        } else if (this.moveSpeed == .5) {
+            this.anims.play('boss_atk_right', true)
         }
     }
 }

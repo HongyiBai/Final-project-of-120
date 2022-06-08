@@ -28,7 +28,9 @@ class Play extends Phaser.Scene {
         this.score = 0;
         this.nextspawn = 20;
         this.boss_spawned = false;
-        this.bosshp = 200;
+        this.bosshp = 100;
+        this.bossinvul = false;
+        this.playerinvul = false;
         let scoreConfig = {
             fontFamily: 'Palatino Linotype',
             fontSize: '30px',
@@ -303,6 +305,18 @@ class Play extends Phaser.Scene {
             this.scene.start("endScene", {score: this.score, win: false});
         }
 
+        this.time.delayedCall(1000, () => {
+            if (this.bossinvul) {
+                this.bossinvul = false;
+            }
+        },this);
+
+        this.time.delayedCall(1500, () => {
+            if (this.playerinvul) {
+                this.playerinvul = false;
+            }
+        },this);
+
         //slime collision check
         this.slimeGroup.getChildren().forEach(function(slime){
             //checks if sword hits slime
@@ -365,6 +379,7 @@ class Play extends Phaser.Scene {
             this.bosshptext = this.add.text(game.config.width/2, 0, 'Boss HP: ' + this.bosshp, scoreConfig).setOrigin(0.5,0);
             this.physics.add.existing(this.boss);
             this.physics.add.collider(this.boss, this.ground);
+            this.boss.CollideWorldBounds = true;
             this.boss.anims.play('boss_walk_right', true);
         }
         
@@ -373,17 +388,27 @@ class Play extends Phaser.Scene {
                 this.boss.body.allowGravity = false;
             }
             this.boss.update();
-            // this.physics.add.overlap(this.boss, this.player, (obj1, obj2) => {
-            //     this.lives -= 20;
-            //     this.livestext.text = "HP: " + this.lives;
-            // },)
+            this.time.delayedCall(7500, () => {
+                this.boss.attack();
+            },this);
+            this.physics.add.overlap(this.boss, this.player, (obj1, obj2) => {
+                if (!this.playerinvul) {
+                    this.playerinvul = true;
+                    this.lives -= 10;
+                    this.livestext.text = "HP: " + this.lives;
+                }
+            },)
             this.physics.add.overlap(this.boss, this.swordHitbox, (obj1, obj2) => {
-                this.bosshp -= 10;
-                this.bosshptext.text = "Boss HP: " + this.bosshp;
+                if (!this.bossinvul) {
+                    this.bossinvul = true;
+                    this.bosshp -= 1;
+                    this.bosshptext.text = "Boss HP: " + this.bosshp;
+                }
                 if (this.bosshp <= 0) {
                     obj1.destroy();
                     this.bosshptext.destroy();
-                    this.scene.start("endScene", {score: this.score});
+                    this.score += 500;
+                    this.scene.start("endScene", {score: this.score, win: true});
                 }
             },) 
         }
