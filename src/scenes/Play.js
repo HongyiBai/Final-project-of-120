@@ -442,7 +442,6 @@ class Play extends Phaser.Scene {
                 //attacking left
                 if (this.direction == 0) {
                     //this.sound.play('atk_sfx');
-                    //this.player.anims.play('atk_left');
                     this.player.play('atk_left', true);
                     this.swordHitbox.body.enable = true;
                     this.physics.world.add(this.swordHitbox.body, true);
