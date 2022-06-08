@@ -106,6 +106,7 @@ class GameMenu extends Phaser.Scene {
                 restart.setScale(1);
             }) 
             restart.on('pointerdown', () => {
+                this.sound.stopAll();
                 this.scene.start("playScene");           
             })
     
@@ -142,6 +143,7 @@ class GameMenu extends Phaser.Scene {
                 restart.setScale(1);
             }) 
             restart.on('pointerdown', () => {
+                this.sound.stopAll();
                 this.scene.start("playScene");           
             })
     
